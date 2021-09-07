@@ -15,7 +15,7 @@ class m210906_160736_create_city_table extends Migration
         $this->createTable('{{%city}}', [
             'id' => $this->primaryKey(),
             'name' => $this->string(255)->notNull(),
-            'date_create' => $this->date()->notNull(),
+            'date_create' => $this->date()->defaultValue(date('Y-m-d')),
         ]);
     }
 
