@@ -19,6 +19,7 @@ class m210906_160817_create_user_table extends Migration
             'phone' => $this->string(255),
             'date_create' => $this->date()->defaultValue(date('Y-m-d')),
             'password' => $this->string(255),
+            'is_admin' => $this->boolean()->defaultValue(False),
         ]);
     }
 

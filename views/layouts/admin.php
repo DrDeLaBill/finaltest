@@ -11,6 +11,9 @@ use yii\bootstrap4\Nav;
 use yii\bootstrap4\NavBar;
 
 AppAsset::register($this);
+
+$this->title = 'finaltest';
+
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -28,7 +31,7 @@ AppAsset::register($this);
 <header>
     <?php
     NavBar::begin([
-        'brandLabel' => Yii::$app->name,
+        'brandLabel' => 'FINALTEST',
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
             'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
@@ -37,7 +40,6 @@ AppAsset::register($this);
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav'],
         'items' => [
-            ['label' => 'Home', 'url' => ['/site/index']],
             ['label' => 'User', 'url' => ['/admin/user']],
             ['label' => 'Report', 'url' => ['/admin/report']],
             ['label' => 'City', 'url' => ['/admin/city']],
