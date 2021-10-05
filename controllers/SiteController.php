@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\City;
+use app\models\Report;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -64,6 +65,27 @@ class SiteController extends Controller
     {
         return $this->render('index', [
             'cities' => City::find()->all(),
+        ]);
+    }
+
+    public function actionGetReports($id) {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return Report::find()->where(['id_city' => $id])->all();
+    }
+
+    public function actionGetCityByName($name) {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return City::find()->where(['name' => $name])->one();
+    }
+
+    public function actionGetCityNameById($id) {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return City::find()->where(['id' => $id])->one()->name;
+    }
+
+    public function actionReport($id) {
+        return $this->render('report', [
+            'report' => Report::findOne(['id' => $id])
         ]);
     }
 }
