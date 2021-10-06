@@ -6,6 +6,7 @@ use app\models\City;
 use app\models\Report;
 use Yii;
 use yii\filters\AccessControl;
+use yii\helpers\Console;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
@@ -78,14 +79,43 @@ class SiteController extends Controller
         return City::find()->where(['name' => $name])->one();
     }
 
+
     public function actionGetCityNameById($id) {
         Yii::$app->response->format = Response::FORMAT_JSON;
         return City::find()->where(['id' => $id])->one()->name;
+    }
+
+    public function actionGetCityIdByName($name) {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return City::find()->where(['name' => $name])->one()->id;
     }
 
     public function actionReport($id) {
         return $this->render('report', [
             'report' => Report::findOne(['id' => $id])
         ]);
+    }
+
+    public function actionSetSessionCityById($city_id) {
+        $session = Yii::$app->session;
+        $session->open();
+        $session->set('city_id', $city_id);
+    }
+
+    public function actionSetSessionCityByName($city_name) {
+        $session = Yii::$app->session;
+        $session->open();
+        $id = City::findOne(['name' => $city_name])->id;
+        $session->set('city_id', $id);
+    }
+
+    public function actionGetSessionCity() {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $session = Yii::$app->session;
+        $session->open();
+        if ($session->has('city_id')){
+            return $session['city_id'];
+        }
+        return false;
     }
 }
