@@ -38,7 +38,7 @@ class Report extends \yii\db\ActiveRecord
             [['id_city', 'title', 'text', 'id_author'], 'required'],
             [['id_city', 'rating', 'id_author'], 'integer'],
             [['text'], 'string'],
-            [['date_create'], 'safe'],
+            [['date_create'], 'default', 'value' => date('Y-m-d')],
             [['title', 'img'], 'string', 'max' => 255],
             [['id_author'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['id_author' => 'id']],
             [['id_city'], 'exist', 'skipOnError' => true, 'targetClass' => City::className(), 'targetAttribute' => ['id_city' => 'id']],

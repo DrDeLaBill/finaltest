@@ -29,7 +29,7 @@ class Module extends \yii\base\Module
                     [
                         'allow' => true,
                         'matchCallback' => function ($rule, $action) {
-                            return Yii::$app->user->identity->is_admin;
+                            return !Yii::$app->user->isGuest;
                         },
                     ],
                 ],

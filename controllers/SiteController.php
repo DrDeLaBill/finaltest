@@ -4,8 +4,11 @@ namespace app\controllers;
 
 use app\models\City;
 use app\models\Report;
+use app\models\ReportForm;
 use app\models\User;
+use phpDocumentor\Reflection\Types\This;
 use Yii;
+use yii\base\Model;
 use yii\filters\AccessControl;
 use yii\helpers\Console;
 use yii\web\Controller;
@@ -98,8 +101,22 @@ class SiteController extends Controller
     }
 
     public function actionNewReport() {
+        $model = new ReportForm();
+
+        if ($this->request->isPost) {
+            if ($model->load($this->request->post())) {
+                $newReport = new Report();
+                $newReport->attributes = $model->attributes;
+                $newReport->id_city = $this->actionGetCityIdByName($model->city);
+                $newReport->id_author = Yii::$app->user->identity->getId();
+                $newReport->rating = 0;
+                $newReport->save();
+                return $this->redirect(['admin/report/view', 'id' => $newReport->id]);
+            }
+        }
+
         return $this->render('new-report', [
-            'model' => new Report()
+            'model' => $model
         ]);
     }
 
