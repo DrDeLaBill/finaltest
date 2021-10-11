@@ -101,22 +101,26 @@ class SiteController extends Controller
     }
 
     public function actionNewReport() {
-        $model = new ReportForm();
+        if (Yii::$app->user->isGuest) {
+            return $this->redirect('index');
+        }
 
         if ($this->request->isPost) {
-            if ($model->load($this->request->post())) {
+            $model = new ReportForm();
+            if ($model->load($this->request->post()) and $model->validate()) {
                 $newReport = new Report();
                 $newReport->attributes = $model->attributes;
                 $newReport->id_city = $this->actionGetCityIdByName($model->city);
                 $newReport->id_author = Yii::$app->user->identity->getId();
                 $newReport->rating = 0;
-                $newReport->save();
-                return $this->redirect(['admin/report/view', 'id' => $newReport->id]);
+                if ($newReport->save()) {
+                    return $this->redirect(['admin/report/view', 'id' => $newReport->id]);
+                }
             }
         }
 
         return $this->render('new-report', [
-            'model' => $model
+            'model' => new ReportForm()
         ]);
     }
 

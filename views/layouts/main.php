@@ -49,17 +49,11 @@ $this->beginBody() ?>
             'options' => ['class' => 'navbar-nav'],
             'items' => [
                 ['label' => 'Главная', 'url' => ['/site/index']],
-                ['label' => 'Панель управления', 'url' => ['/admin/default/index']],
-                Yii::$app->user->isGuest ? (
-                    ['label' => 'Войти', 'url' => ['/auth/login']]
-                ) : (
-                    ['label' => 'Новый отзыв', 'url' => ['/site/new-report']]
-                ),
-                Yii::$app->user->isGuest ? (
-                    ['label' => 'Зарегистрироваться', 'url' => ['/auth/signup']]
-                ) : (
-                    ['label' => 'Выйти', 'url' => ['/auth/logout']]
-                ),
+                ['label' => 'Панель управления', 'url' => ['/admin/default/index'], 'visible' => !Yii::$app->user->isGuest],
+                ['label' => 'Войти', 'url' => ['/auth/login'], 'visible' => Yii::$app->user->isGuest],
+                ['label' => 'Новый отзыв', 'url' => ['/site/new-report'], 'visible' => !Yii::$app->user->isGuest],
+                ['label' => 'Зарегистрироваться', 'url' => ['/auth/signup'], 'visible' => Yii::$app->user->isGuest],
+                ['label' => 'Выйти', 'url' => ['/auth/logout'], 'visible' => !Yii::$app->user->isGuest],
             ],
         ]
     );

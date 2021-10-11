@@ -1,7 +1,6 @@
 function reportsUpdateProcess() {
     $.when(getSessionCity()).then(
         function (response) {
-            console.log("resp: " + response);
             if (response) {
                 jQuery("#dropdown-cities").hide();
 
@@ -78,7 +77,6 @@ function showReport(report, author) {
         "<div class=\"card-body\">" +
         "<p class=\"card-text\">" + report.text + "</p>" +
         "<p class=\"card-text\">Автор: " + author.fio + "</p>" +
-        "<a href=\"#\" class=\"btn btn-primary\">" + "Подробнее" + "</a>" +
         "</div>" +
         "</div>"
     );

@@ -17,7 +17,6 @@ class ReportForm extends Model
             [['city', 'text', 'title'], 'required'],
             [['city', 'title'], 'string', 'max' => 255],
             [['text'], 'string'],
-            [['date_create'], 'default', 'value' => date('Y-m-d')],
         ];
     }
 }
