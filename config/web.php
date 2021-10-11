@@ -25,8 +25,8 @@ $config = [
         ],
         'session' => [
             'class' => 'yii\web\Session',
-            'cookieParams' => ['httponly' => true, 'lifetime' => 10],
-            'timeout' => 10, //session expire
+            'cookieParams' => ['httponly' => true, 'lifetime' => 60 * 60 * 2],
+            'timeout' => 60 * 60 * 2, //session expire
             'useCookies' => true,
         ],
         'errorHandler' => [

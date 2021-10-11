@@ -48,17 +48,17 @@ $this->beginBody() ?>
         [
             'options' => ['class' => 'navbar-nav'],
             'items' => [
-                ['label' => 'Home', 'url' => ['/site/index']],
-                ['label' => 'Admin', 'url' => ['/admin/default/index']],
+                ['label' => 'Главная', 'url' => ['/site/index']],
+                ['label' => 'Панель управления', 'url' => ['/admin/default/index']],
                 Yii::$app->user->isGuest ? (
-                    ['label' => 'Login', 'url' => ['/auth/login']]
+                    ['label' => 'Войти', 'url' => ['/auth/login']]
                 ) : (
-                    ['label' => 'logout', 'url' => ['/auth/logout']]
+                    ['label' => 'Новый отзыв', 'url' => ['/site/new-report']]
                 ),
                 Yii::$app->user->isGuest ? (
-                    ['label' => 'Signup', 'url' => ['/auth/signup']]
+                    ['label' => 'Зарегистрироваться', 'url' => ['/auth/signup']]
                 ) : (
-                    ['label' => Yii::$app->user->identity->fio, 'url' => ['/site/user']]
+                    ['label' => 'Выйти', 'url' => ['/auth/logout']]
                 ),
             ],
         ]

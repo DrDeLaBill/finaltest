@@ -61,19 +61,33 @@ function getSelectedCityName() {
 function showReports(reports) {
     jQuery("#reports").html("");
     for (let index in reports) {
-        //console.log(reports[index]);
-        jQuery("#reports").append(
-            "<div class=\"card my-2\">" +
-            "<div class=\"card-header\">" +
-            reports[index].title +
-            "</div>" +
-            "<div class=\"card-body\">" +
-            "<p class=\"card-text\">" + reports[index].text + "</p>" +
-            "<a href=\"#\" class=\"btn btn-primary\">" + "Подробнее" + "</a>" +
-            "</div>" +
-            "</div>"
+        $.when(getReportAuthor(reports[index])).then(
+            function (author) {
+                showReport(reports[index], author);
+            }
         );
     }
+}
+
+function showReport(report, author) {
+    jQuery("#reports").append(
+        "<div class=\"card my-2\">" +
+        "<div class=\"card-header\">" +
+        report.title +
+        "</div>" +
+        "<div class=\"card-body\">" +
+        "<p class=\"card-text\">" + report.text + "</p>" +
+        "<p class=\"card-text\">Автор: " + author.fio + "</p>" +
+        "<a href=\"#\" class=\"btn btn-primary\">" + "Подробнее" + "</a>" +
+        "</div>" +
+        "</div>"
+    );
+}
+
+function getReportAuthor(report) {
+    return $.ajax({
+        url: "/site/get-report-author?id_author=" + report.id_author
+    });
 }
 
 function setSessionCityById(city_id) {

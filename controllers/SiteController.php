@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\City;
 use app\models\Report;
+use app\models\User;
 use Yii;
 use yii\filters\AccessControl;
 use yii\helpers\Console;
@@ -96,6 +97,12 @@ class SiteController extends Controller
         ]);
     }
 
+    public function actionNewReport() {
+        return $this->render('new-report', [
+            'model' => new Report()
+        ]);
+    }
+
     public function actionSetSessionCityById($city_id) {
         $session = Yii::$app->session;
         $session->open();
@@ -117,5 +124,15 @@ class SiteController extends Controller
             return $session['city_id'];
         }
         return false;
+    }
+
+    public function actionGetReportAuthor($id_author) {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return User::findOne(['id' => $id_author]);
+    }
+
+    public function actionGetCitiesLike($search) {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return City::find()->where(['like', 'name', '%' . $search . '%', false])->all();
     }
 }
