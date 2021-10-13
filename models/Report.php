@@ -35,7 +35,7 @@ class Report extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_city', 'title', 'text', 'id_author'], 'required'],
+            [['id_city', 'title', 'text'], 'required'],
             [['id_city', 'rating', 'id_author'], 'integer'],
             [['text'], 'string'],
             [['date_create'], 'default', 'value' => date('Y-m-d')],
@@ -80,5 +80,10 @@ class Report extends \yii\db\ActiveRecord
     public function getCity()
     {
         return $this->hasOne(City::className(), ['id' => 'id_city']);
+    }
+
+    public function setImage($imageName) {
+        $this->img = $imageName;
+        return $this->save(false);
     }
 }
