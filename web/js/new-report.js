@@ -1,4 +1,3 @@
-
 let $result = $('#search_box-result');
 
 $('#city').on('keyup', function () {
@@ -49,23 +48,26 @@ $("#submit").on('click', function () {
 });
 
 function saveReport() {
+    let form = $('#reportForm')[0];
+    let reportForm = new FormData(form);
     $.ajax({
         url: "/site/save-report",
         type: "POST",
-        data: {
-            form: $('#ReportForm').serializeArray()
-        },
+        data: reportForm,
         success: function(data){
             if (data) {
                 console.log('Отзыв успешно сохранён');
                 $("#idReport").val(data);
                 saveReportImage();
+                message('Отзыв успешно сохранён');
             } else {
                 console.log('Отзыв не сохранён');
+                message('Отзыв не сохранён');
             }
         },
         error: function () {
-            console.log('error');
+            console.log('Отзыв не сохранён');
+            message('Отзыв не сохранён');
         }
     });
 
@@ -75,15 +77,37 @@ function saveReport() {
 function saveReportImage() {
     let form = $('#imageFile')[0];
     let imageFile = new FormData(form);
-    $.ajax({
-        url: '/site/save-report-image',
-        data: imageFile,
-        type: 'POST',
-        contentType: false, // NEEDED, DON'T OMIT THIS (requires jQuery 1.6+)
-        processData: false, // NEEDED, DON'T OMIT THIS
-        // ... Other options like success and etc
-        success: function (data) {
-            console.log('изображение: ' + data);
-        }
-    });
+    if ($('#uploadimageform-imagefile').val() != '') {
+        $.ajax({
+            url: '/site/save-report-image',
+            data: imageFile,
+            type: 'POST',
+            contentType: false, // NEEDED, DON'T OMIT THIS (requires jQuery 1.6+)
+            processData: false, // NEEDED, DON'T OMIT THIS
+            // ... Other options like success and etc
+            success: function (data) {
+                console.log('изображение: ' + data);
+                clearFields();
+            },
+            error: function (data) {
+                message('Изображение не загружено');
+            }
+        });
+    } else {
+        clearFields();
+    }
+}
+
+function clearFields() {
+    $('#uploadimageform-imagefile').val('');
+    $("#idReport").val('');
+    $("#city").val('');
+    $("#title").val('');
+    $("#text").val('');
+    $("#rating").val('1');
+    console.log('Поля очищены, мой лорд');
+}
+
+function message(msg) {
+    bootbox.alert(msg);
 }

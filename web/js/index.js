@@ -77,6 +77,7 @@ function showReport(report, author) {
         "<div class=\"card-body\">" +
         "<p class=\"card-text\">" + report.text + "</p>" +
         "<p class=\"card-text\">Автор: " + author.fio + "</p>" +
+        "<a href=\"/site/edit-report?id=" + report.id + "\">Редактировать</a>" +
         "</div>" +
         "</div>"
     );

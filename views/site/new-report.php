@@ -3,21 +3,25 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
+use app\assets\NewReportAsset;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\ReportForm */
 /* @var $model yii\widgets\ActiveForm */
+
+NewReportAsset::register($this);
 ?>
 
 <div class="report-form">
     <div class="search_form">
 
-        <?php $form = ActiveForm::begin(['id' => 'ReportForm']); ?>
+        <?php $form = ActiveForm::begin(['id' => 'reportForm']); ?>
 
-        <div class="search_box">
-            <?= $form->field($model, 'city')->textInput([
-                 'id' => 'city',
-                 'placeholder' => 'Введите город'
+        <div class="search_box p-0">
+            <?= $form->field($model, 'city', ['options' => ['class' => 'form-group mb-0']])->textInput([
+                'id' => 'city',
+                'placeholder' => 'Введите город (по умолчанию: все города)',
+                'autocomplete' => 'off'
              ]) ?>
             <div class="search_box-result" id="search_box-result"></div>
         </div>
@@ -65,8 +69,5 @@ use yii\widgets\ActiveForm;
                 'id' => 'submit'
             ]) ?>
         </div>
-
-
-
     </div>
 </div>

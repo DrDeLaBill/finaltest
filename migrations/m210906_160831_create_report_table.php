@@ -14,7 +14,7 @@ class m210906_160831_create_report_table extends Migration
     {
         $this->createTable('{{%report}}', [
             'id' => $this->primaryKey(),
-            'id_city' => $this->integer()->notNull(),
+            'id_city' => $this->integer(),
             'title' => $this->string(255)->notNull(),
             'text' => $this->text()->notNull(),
             'rating' => $this->integer(),

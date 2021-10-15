@@ -8,6 +8,7 @@ use yii\web\UploadedFile;
 
 class ReportForm extends Model
 {
+    public $id;
     public $city;
     public $title;
     public $text;

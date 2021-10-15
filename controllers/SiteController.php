@@ -2,13 +2,13 @@
 
 namespace app\controllers;
 
+use app\assets\EditReportAsset;
 use app\models\City;
 use app\models\Report;
 use app\models\ReportForm;
 use app\models\UploadImageForm;
 use app\models\User;
 use phpDocumentor\Reflection\Types\This;
-use UploadForm;
 use Yii;
 use yii\base\Model;
 use yii\filters\AccessControl;
@@ -17,7 +17,6 @@ use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
-use app\models\ContactForm;
 use yii\web\UploadedFile;
 
 class SiteController extends Controller
@@ -76,9 +75,48 @@ class SiteController extends Controller
         ]);
     }
 
+    public function actionNewReport()
+    {
+        if (Yii::$app->user->isGuest) {
+            return $this->redirect('index');
+        }
+        return $this->render('new-report', [
+            'model' => new ReportForm(),
+            'image' => new UploadImageForm()
+        ]);
+    }
+
+    public function actionEditReport($id) {
+        if (Yii::$app->user->isGuest) {
+            return $this->redirect('index');
+        }
+        $report = Report::findOne(['id' => $id]);
+        $reportForm = new ReportForm();
+        $reportForm->attributes = $report->attributes;
+        $reportForm->city = $report->city->name;
+
+        return $this->render('edit-report', [
+            'model' => $reportForm,
+            'image' => new UploadImageForm(),
+            'imageName' => $report->img
+        ]);
+    }
+
+    public function actionSaveEditReport() {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $report = $this->loadFormInReport();
+        if ($report->validate()) {
+            $editableReport = Report::findOne(['id' => $report->id]);
+            $editableReport->attributes = $report->attributes;
+            return $editableReport->save(false);
+        }
+        return false;
+    }
+
     public function actionGetReports($id)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
+        $form = Yii::$app->request->post('form');
         return Report::find()->where(['id_city' => $id])->all();
     }
 
@@ -108,33 +146,27 @@ class SiteController extends Controller
         ]);
     }
 
-    public function actionNewReport()
-    {
-        if (Yii::$app->user->isGuest) {
-            return $this->redirect('index');
-        }
-        return $this->render('new-report', [
-            'model' => new ReportForm(),
-            'image' => new UploadImageForm()
-        ]);
-    }
-
     public function actionSaveReport()
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
-        $form = Yii::$app->request->post('form');
 
-        $report = new Report();
-        $report->id_city = $this->actionGetCityIdByName($form[1]['value']);
-        $report->title = $form[2]['value'];
-        $report->text = $form[3]['value'];
-        $report->id_author = Yii::$app->user->identity->getId();
-        $report->rating = $form[4]['value'];
+        $report = $this->loadFormInReport();
 
         if ($report->validate() and $report->save()) {
             return $report->id;
         }
         return false;
+    }
+
+    public function loadFormInReport() {
+        $reportForm = Yii::$app->request->post('form');
+        $report = new Report();
+        $report->id_city = $this->actionGetCityIdByName($reportForm[1]['value']);
+        $report->title = $reportForm[2]['value'];
+        $report->text = $reportForm[3]['value'];
+        $report->id_author = Yii::$app->user->identity->getId();
+        $report->rating = $reportForm[4]['value'];
+        return $report;
     }
 
     public function actionSaveReportImage()
@@ -143,8 +175,8 @@ class SiteController extends Controller
         $image = new UploadImageForm();
         if ($image->load(Yii::$app->request->post())) {
             $image->imageFile = UploadedFile::getInstance($image, 'imageFile');
-            $imageName = $image->uploadImage($image->imageFile);
             $report = Report::findOne(['id' => $image->idReport]);
+            $imageName = $image->uploadImage($image->imageFile, $report->img);
             $report->setImage($imageName);
             return $imageName;
         }
