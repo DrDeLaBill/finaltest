@@ -44,40 +44,47 @@ $(document).on('click', function (e) {
 });
 
 $("#submit").on('click', function () {
-    saveReport();
+    $.when(saveReport()).then(function (data) {
+            if (data) {
+                saveReportImage();
+                clearFields();
+            }
+        }
+    );
 });
 
 function saveReport() {
     let form = $('#reportForm')[0];
     let reportForm = new FormData(form);
-    $.ajax({
+    return $.ajax({
         url: "/site/save-report",
         type: "POST",
         data: reportForm,
+        contentType: false,
+        processData: false,
         success: function(data){
             if (data) {
                 console.log('Отзыв успешно сохранён');
                 $("#idReport").val(data);
-                saveReportImage();
                 message('Отзыв успешно сохранён');
             } else {
                 console.log('Отзыв не сохранён');
                 message('Отзыв не сохранён');
             }
+            return data;
         },
-        error: function () {
+        error: function (data) {
             console.log('Отзыв не сохранён');
             message('Отзыв не сохранён');
+            return false;
         }
     });
-
-    return false;
 }
 
 function saveReportImage() {
     let form = $('#imageFile')[0];
     let imageFile = new FormData(form);
-    if ($('#uploadimageform-imagefile').val() != '') {
+    if (getImageOnPage() !== '') {
         $.ajax({
             url: '/site/save-report-image',
             data: imageFile,
@@ -87,14 +94,11 @@ function saveReportImage() {
             // ... Other options like success and etc
             success: function (data) {
                 console.log('изображение: ' + data);
-                clearFields();
             },
             error: function (data) {
                 message('Изображение не загружено');
             }
         });
-    } else {
-        clearFields();
     }
 }
 
@@ -110,4 +114,9 @@ function clearFields() {
 
 function message(msg) {
     bootbox.alert(msg);
+}
+
+function getImageOnPage() {
+    let data = $('#uploadimageform-imagefile').val().split('\\');
+    return data[data.length - 1];
 }

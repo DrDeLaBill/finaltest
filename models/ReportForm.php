@@ -20,8 +20,8 @@ class ReportForm extends Model
         return [
             [['text', 'title'], 'required'],
             [['city', 'title'], 'string', 'max' => 255],
-            [['text'], 'string'],
-            [['rating'], 'integer'],
+            [['text', 'img'], 'string'],
+            [['rating', 'id'], 'integer'],
         ];
     }
 }

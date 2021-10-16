@@ -98,19 +98,27 @@ class SiteController extends Controller
         return $this->render('edit-report', [
             'model' => $reportForm,
             'image' => new UploadImageForm(),
-            'imageName' => $report->img
+            'imageName' => $report->img,
+            'id' => $id
         ]);
     }
 
     public function actionSaveEditReport() {
         Yii::$app->response->format = Response::FORMAT_JSON;
-        $report = $this->loadFormInReport();
-        if ($report->validate()) {
-            $editableReport = Report::findOne(['id' => $report->id]);
-            $editableReport->attributes = $report->attributes;
-            return $editableReport->save(false);
+        $reportForm = new ReportForm();
+        if ($reportForm->load(Yii::$app->request->post())) {
+            $report = Report::findOne(['id' => $reportForm->id]);
+            $report->attributes = $reportForm->attributes;
+            $report->id_city = $this->actionGetCityIdByName($reportForm['city']);
+            if ($report->validate() and $report->save(false)) {
+                return $report->id;
+            }
         }
         return false;
+    }
+
+    public function actionGetImageName($id) {
+        return Report::findOne(['id' => $id])->img;
     }
 
     public function actionGetReports($id)
@@ -149,24 +157,17 @@ class SiteController extends Controller
     public function actionSaveReport()
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
-
-        $report = $this->loadFormInReport();
-
-        if ($report->validate() and $report->save()) {
-            return $report->id;
+        $reportForm = new ReportForm();
+        if ($reportForm->load(Yii::$app->request->post())) {
+            $report = new Report();
+            $report->attributes = $reportForm->attributes;
+            $report->id_city = $this->actionGetCityIdByName($reportForm['city']);
+            $report->id_author = Yii::$app->user->identity->getId();
+            if ($report->validate() and $report->save()) {
+                return $report->id;
+            }
         }
         return false;
-    }
-
-    public function loadFormInReport() {
-        $reportForm = Yii::$app->request->post('form');
-        $report = new Report();
-        $report->id_city = $this->actionGetCityIdByName($reportForm[1]['value']);
-        $report->title = $reportForm[2]['value'];
-        $report->text = $reportForm[3]['value'];
-        $report->id_author = Yii::$app->user->identity->getId();
-        $report->rating = $reportForm[4]['value'];
-        return $report;
     }
 
     public function actionSaveReportImage()
