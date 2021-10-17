@@ -90,6 +90,10 @@ EditReportAsset::register($this);
                 'class' => 'btn btn-success',
                 'id' => 'edit'
             ]) ?>
+            <?= Html::Button('Delete', [
+                'class' => 'btn btn-danger',
+                'id' => 'delete'
+            ]) ?>
         </div>
     </div>
 </div>

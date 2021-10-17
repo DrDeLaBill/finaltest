@@ -16,11 +16,9 @@ $this->title = 'My Yii Application';
             <span id="user-city">Ваш город</span>
         </button>
         <div class="dropdown-menu col-sm-6" aria-labelledby="dropdownMenuButton">
-            <?php
-            foreach ($cities as $city): ?>
+            <?php foreach ($cities as $city): ?>
                 <button class="dropdown-item" id="city-<?= $city->id ?>"><?= $city->name ?></button>
-            <?php
-            endforeach; ?>
+            <?php endforeach; ?>
         </div>
     </div>
     <div id="reports">
@@ -33,10 +31,10 @@ $this->title = 'My Yii Application';
         reportsUpdateProcess();
 
         <?php foreach ($cities as $city): ?>
-        jQuery("#city-<?= $city->id ?>").on('click', function () {
-            getReportsById(<?= $city->id ?>);
-            setSessionCityById("<?= $city->id ?>");
-        });
+            jQuery("#city-<?= $city->id ?>").on('click', function () {
+                getReportsById(<?= $city->id ?>);
+                setSessionCityById("<?= $city->id ?>");
+            });
         <?php endforeach; ?>
     }
 </script>

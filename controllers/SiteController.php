@@ -121,6 +121,11 @@ class SiteController extends Controller
         return Report::findOne(['id' => $id])->img;
     }
 
+    public function actionIsGuest() {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return Yii::$app->user->isGuest;
+    }
+
     public function actionGetReports($id)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
@@ -176,12 +181,25 @@ class SiteController extends Controller
         $image = new UploadImageForm();
         if ($image->load(Yii::$app->request->post())) {
             $image->imageFile = UploadedFile::getInstance($image, 'imageFile');
-            $report = Report::findOne(['id' => $image->idReport]);
-            $imageName = $image->uploadImage($image->imageFile, $report->img);
-            $report->setImage($imageName);
-            return $imageName;
+            if ($image->validate()) {
+                $report = Report::findOne(['id' => $image->idReport]);
+                $imageName = $image->uploadImage($image->imageFile, $report->img);
+                $report->setImage($imageName);
+                return $imageName;
+            }
         }
         return false;
+    }
+
+    public function actionDeleteReport($id) {
+        if (Yii::$app->user->isGuest) {
+            return false;
+        }
+
+        $report = Report::findOne(['id' => $id]);
+        $image = new UploadImageForm();
+        $image->deleteFile($report->img);
+        return $report->delete();
     }
 
     public function actionSetSessionCityById($city_id)

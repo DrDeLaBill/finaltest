@@ -89,11 +89,15 @@ function saveReportImage() {
             url: '/site/save-report-image',
             data: imageFile,
             type: 'POST',
-            contentType: false, // NEEDED, DON'T OMIT THIS (requires jQuery 1.6+)
-            processData: false, // NEEDED, DON'T OMIT THIS
-            // ... Other options like success and etc
+            contentType: false,
+            processData: false,
             success: function (data) {
-                console.log('изображение: ' + data);
+                if (data) {
+                    console.log('изображение: ' + data);
+                } else {
+                    message('Изображение не загружено');
+                }
+                console.log(data);
             },
             error: function (data) {
                 message('Изображение не загружено');

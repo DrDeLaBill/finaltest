@@ -1,16 +1,35 @@
 $('#edit').on('click', function () {
     $.when(editReport()).then(function (data) {
             if (data) {
-                $.when(getImageName(data)).then(function (imageName) {
-                    if (imageName !== getImageOnPage()) {
-                        console.log(imageName);
-                        saveReportImage();
-                    }
-                });
+                console.log();
+                saveReportImage();
+                messageWithReload('Редактирование произведено успешно');
             }
         }
     );
 });
+
+$("#delete").on('click', function () {
+    $.when(deleteReport(getReportId())).then(
+        function (response) {
+            if (response) {
+                message('Отзыв удалён');
+            } else {
+                message('Отзыв не удалён');
+            }
+        }
+    );
+});
+
+function deleteReport(id) {
+    return $.ajax({
+        url: '/site/delete-report',
+        type: "GET",
+        data: {id: id}
+    }).done(function (response) {
+        return response;
+    });
+}
 
 function editReport() {
     let form = $('#reportForm')[0];
@@ -23,7 +42,6 @@ function editReport() {
         processData: false,
         success: function (data) {
             if (data) {
-                message('Редактирование произведено успешно');
                 $("#idReport").val(data);
             } else {
                 message('Ошибка редактирования');
@@ -51,3 +69,12 @@ function getImageName(id) {
     });
 }
 
+function getReportId() {
+    return $('#reportform-id').val();
+}
+
+function messageWithReload(msg) {
+    bootbox.alert(msg, function () {
+        location.reload();
+    });
+}

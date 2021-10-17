@@ -60,9 +60,12 @@ function getSelectedCityName() {
 function showReports(reports) {
     jQuery("#reports").html("");
     for (let index in reports) {
-        $.when(getReportAuthor(reports[index])).then(
-            function (author) {
+        $.when(getReportAuthor(reports[index]), isGuest()).then(
+            function (author, userIsGuest) {
                 showReport(reports[index], author);
+                if (!userIsGuest[0]) {
+                    showEditButton(reports[index].id);
+                }
             }
         );
     }
@@ -71,16 +74,30 @@ function showReports(reports) {
 function showReport(report, author) {
     jQuery("#reports").append(
         "<div class=\"card my-2\">" +
-        "<div class=\"card-header\">" +
-        report.title +
-        "</div>" +
-        "<div class=\"card-body\">" +
-        "<p class=\"card-text\">" + report.text + "</p>" +
-        "<p class=\"card-text\">Автор: " + author.fio + "</p>" +
-        "<a href=\"/site/edit-report?id=" + report.id + "\">Редактировать</a>" +
-        "</div>" +
+            "<div class=\"card-header\">" +
+                report.title +
+            "</div>" +
+            "<div class=\"card-body\" id=\"report-" + report.id + "\">" +
+                "<p class=\"card-text\">" + report.text + "</p>" +
+                "<p class=\"card-text\">Автор: " + author.fio + "</p>" +
+            "</div>" +
         "</div>"
     );
+}
+
+function showEditButton(reportId) {
+    $("#report-" + reportId).append(
+        "<a class=\"btn btn-primary\" href=\"/site/edit-report?id=" + reportId + "\">Редактировать</a>"
+    );
+}
+
+function isGuest() {
+    return $.ajax({
+        url: '/site/is-guest',
+        type: "GET"
+    }).done(function (data) {
+        return data;
+    });
 }
 
 function getReportAuthor(report) {

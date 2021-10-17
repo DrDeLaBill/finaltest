@@ -16,7 +16,7 @@ class UploadImageForm extends Model
     public function rules()
     {
         return [
-            [['imageFile'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg', 'maxFiles' => 1],
+            [['imageFile'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg', 'maxFiles' => 1, 'maxSize' => 512000],
             [['idReport'], 'string']
         ];
     }
