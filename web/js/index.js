@@ -60,11 +60,12 @@ function getSelectedCityName() {
 function showReports(reports) {
     jQuery("#reports").html("");
     for (let index in reports) {
-        $.when(getReportAuthor(reports[index]), isGuest()).then(
+        $.when(getReportAuthor(reports[index].id_author), isGuest()).then(
             function (author, userIsGuest) {
-                showReport(reports[index], author);
+                showReport(reports[index], author[0]);
                 if (!userIsGuest[0]) {
                     showEditButton(reports[index].id);
+                    addContactLink(author[0]);
                 }
             }
         );
@@ -79,7 +80,7 @@ function showReport(report, author) {
             "</div>" +
             "<div class=\"card-body\" id=\"report-" + report.id + "\">" +
                 "<p class=\"card-text\">" + report.text + "</p>" +
-                "<p class=\"card-text\">Автор: " + author.fio + "</p>" +
+                "<p class=\"card-text\" id=\"author-" + author.id + "\">Автор: " + author.fio + "</p>" +
             "</div>" +
         "</div>"
     );
@@ -88,6 +89,26 @@ function showReport(report, author) {
 function showEditButton(reportId) {
     $("#report-" + reportId).append(
         "<a class=\"btn btn-primary\" href=\"/site/edit-report?id=" + reportId + "\">Редактировать</a>"
+    );
+}
+
+function addContactLink(author) {
+    element = $("#author-" + author.id);
+    element.css('cursor', 'pointer');
+    element.attr('onclick', 'showContacts(' + author.id + ')');
+}
+
+function showContacts(authorId) {
+    $.when(getReportAuthor(authorId), isGuest()).then(
+        function (author, userIsGuest) {
+            if (!userIsGuest) {
+                bootbox.alert(
+                    "<p>" + author.email + "</p>" +
+                    "<p>" + author.phone + "</p>" +
+                    "<a class=\"btn btn-primary\" href=\"/site/author?id=" + author.id + "\">Все отзывы</a>"
+                );
+            }
+        }
     );
 }
 
@@ -100,9 +121,9 @@ function isGuest() {
     });
 }
 
-function getReportAuthor(report) {
+function getReportAuthor(authorId) {
     return $.ajax({
-        url: "/site/get-report-author?id_author=" + report.id_author
+        url: "/site/get-report-author?id_author=" + authorId
     });
 }
 
