@@ -34,6 +34,7 @@ function getReportsById(id) {
     }).done(function (reports) {
         jQuery("#user-city").text(getCityName(id));
         showReports(reports);
+        jQuery("#dropdown-cities").hide();
     });
 }
 
