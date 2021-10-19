@@ -7,6 +7,7 @@
 /* @var $model app\models\LoginForm */
 
 use yii\bootstrap4\ActiveForm;
+use yii\captcha\Captcha;
 use yii\helpers\Html;
 
 $this->title = 'Signup';
@@ -38,7 +39,7 @@ $this->title = 'Signup';
 
     <?= $form->field($model, 'password2')->passwordInput() ?>
 
-    <?= $form->field($model, 'rememberMe')->checkbox() ?>
+    <?= $form->field($model, 'verifyCode')->widget(Captcha::className()) ?>
 
     <?= Html::submitButton('Signup', ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>
 

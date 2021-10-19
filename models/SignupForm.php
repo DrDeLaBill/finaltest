@@ -20,7 +20,7 @@ class SignupForm extends Model
     public $phone;
     public $password;
     public $password2;
-    public $rememberMe = true;
+    public $verifyCode;
 
     private $_user = false;
 
@@ -40,8 +40,7 @@ class SignupForm extends Model
             //[['password'], 'validatePassword'],
             [['password'], 'string', 'min' => 8],
             [['password2'], 'compare', 'compareAttribute' => 'password', 'message' => "Passwords don't match"],
-            // rememberMe must be a boolean value
-            [['rememberMe'], 'boolean'],
+            [['verifyCode'], 'captcha'],
         ];
     }
 
@@ -71,7 +70,7 @@ class SignupForm extends Model
      */
     public function login()
     {
-        return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 30 : 0);
+        return Yii::$app->user->login($this->getUser());
     }
 
     /**

@@ -71,7 +71,7 @@ class SiteController extends Controller
     public function actionIndex()
     {
         return $this->render('index', [
-            'cities' => City::find()->all(),
+            'cities' => City::find()->orderBy(['name' => SORT_ASC])->all(),
         ]);
     }
 
@@ -100,6 +100,12 @@ class SiteController extends Controller
             'image' => new UploadImageForm(),
             'imageName' => $report->img,
             'id' => $id
+        ]);
+    }
+
+    public function actionAuthor($id) {
+        return $this->render('author', [
+            'reports' => Report::find()->where(['id_author' => $id])->all()
         ]);
     }
 
@@ -166,6 +172,7 @@ class SiteController extends Controller
         if ($reportForm->load(Yii::$app->request->post())) {
             $report = new Report();
             $report->attributes = $reportForm->attributes;
+            $this->addNewCity($reportForm['city']);
             $report->id_city = $this->actionGetCityIdByName($reportForm['city']);
             $report->id_author = Yii::$app->user->identity->getId();
             if ($report->validate() and $report->save()) {
@@ -240,4 +247,12 @@ class SiteController extends Controller
         return City::find()->where(['like', 'name', '%' . $search . '%', false])->all();
     }
 
+    public function addNewCity($cityName): bool {
+        if ($cityName != "" and !City::find()->where(['name' => $cityName])->exists()) {
+            $city = new City();
+            $city->name = $cityName;
+            return $city->save();
+        }
+        return false;
+    }
 }

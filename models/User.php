@@ -19,6 +19,10 @@ use yii\web\IdentityInterface;
  */
 class User extends \yii\db\ActiveRecord implements IdentityInterface
 {
+    const STATUS_WAIT = 5;
+    const STATUS_ACTIVE = 4;
+    const STATUS_DELETED = 3;
+
     /**
      * {@inheritdoc}
      */
@@ -36,6 +40,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
             [['fio', 'email'], 'required'],
             [['date_create'], 'safe'],
             [['fio', 'email', 'phone', 'password'], 'string', 'max' => 255],
+            ['status', 'in', 'range' => [self::STATUS_DELETED, self::STATUS_WAIT, self::STATUS_ACTIVE]],
         ];
     }
 
@@ -91,7 +96,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
 
     public static function findByEmail($email)
     {
-        return User::findOne(['email' => $email]);
+        return static::findOne(['email' => $email]);
     }
 
     /**

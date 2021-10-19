@@ -71,6 +71,7 @@ function saveReport() {
                 console.log('Отзыв не сохранён');
                 message('Отзыв не сохранён');
             }
+            console.log(data);
             return data;
         },
         error: function (data) {

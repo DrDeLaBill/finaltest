@@ -60,8 +60,12 @@ class LoginForm extends Model
      */
     public function login()
     {
-        if ($this->validate()) {
-            return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600*24*30 : 0);
+        $user = $this->getUser();
+        if($user->status === User::STATUS_ACTIVE){
+            return Yii::$app->user->login($user, $this->rememberMe ? 3600 * 24 * 30 : 0);
+        }
+        if($user->status === User::STATUS_WAIT){
+            throw new \DomainException('To complete the registration, confirm your email. Check your email.');
         }
         return false;
     }

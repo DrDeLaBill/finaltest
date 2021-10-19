@@ -65,7 +65,7 @@ function showReports(reports) {
                 showReport(reports[index], author[0]);
                 if (!userIsGuest[0]) {
                     showEditButton(reports[index].id);
-                    addContactLink(author[0]);
+                    addContactLink(reports[index].id, author[0]);
                 }
             }
         );
@@ -79,8 +79,15 @@ function showReport(report, author) {
                 report.title +
             "</div>" +
             "<div class=\"card-body\" id=\"report-" + report.id + "\">" +
-                "<p class=\"card-text\">" + report.text + "</p>" +
-                "<p class=\"card-text\" id=\"author-" + author.id + "\">Автор: " + author.fio + "</p>" +
+                "<div class='row' id='body'>" +
+                    "<div class='col' id='text'>" +
+                        "<p class=\"card-text\">" + report.text + "</p>" +
+                        "<p class=\"card-text\" id=\"author-" + author.id + "\">Автор: " + author.fio + "</p>" +
+                    "</div>" +
+                    "<div class='col'>" +
+                        "<img src='" + ((report.img) ? ("/uploads/" + report.img) : "") + "' class='img-fluid my-2' style='width: 20%' alt=''>" +
+                    "</div>" +
+                "</div>" +
             "</div>" +
         "</div>"
     );
@@ -92,8 +99,8 @@ function showEditButton(reportId) {
     );
 }
 
-function addContactLink(author) {
-    element = $("#author-" + author.id);
+function addContactLink(reportId, author) {
+    element = $("#report-" + reportId).children("#body").children("#text").children("#author-" + author.id);
     element.css('cursor', 'pointer');
     element.attr('onclick', 'showContacts(' + author.id + ')');
 }
@@ -101,11 +108,11 @@ function addContactLink(author) {
 function showContacts(authorId) {
     $.when(getReportAuthor(authorId), isGuest()).then(
         function (author, userIsGuest) {
-            if (!userIsGuest) {
+            if (!userIsGuest[0]) {
                 bootbox.alert(
-                    "<p>" + author.email + "</p>" +
-                    "<p>" + author.phone + "</p>" +
-                    "<a class=\"btn btn-primary\" href=\"/site/author?id=" + author.id + "\">Все отзывы</a>"
+                    "<p>" + author[0].email + "</p>" +
+                    "<p>" + author[0].phone + "</p>" +
+                    "<a class=\"btn btn-primary\" href=\"/site/author?id=" + author[0].id + "\">Все отзывы</a>"
                 );
             }
         }
@@ -168,5 +175,10 @@ function showBootbox() {
 }
 
 function setYandexGeolocation() {
-    jQuery("#user-city").text(ymaps.geolocation.city);
+    city = ymaps.geolocation.city;
+    if (city) {
+        jQuery("#user-city").text(city);
+    } else {
+        jQuery("#user-city").text('Ижевск');
+    }
 }
